@@ -18,10 +18,11 @@ DB_FILE="/opt/TrafficControl/"
 local = threading.local()
 
 def get_conn():
+    """Return a thread-local SQLite connection."""
     # Checking if the current thread has a connection object
     if not hasattr(local, 'conn'):
         # If not, create a new connection object
-        local.conn = sqlite3.connect(DB_FILE + 'traffic.db')
+        local.conn = sqlite3.connect(DB_FILE + 'traffic.db', check_same_thread=False)
     return local.conn
 
 
@@ -111,10 +112,6 @@ def traffic_get_total_data(ip_address):
     conn.close()
     return totaltr
 
-
-def get_conn():
-    conn = sqlite3.connect(DB_FILE + 'traffic.db', check_same_thread=False)
-    return conn
 
 def traffic_get_data(ip_address):
     conn = get_conn()
